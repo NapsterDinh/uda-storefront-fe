@@ -1,0 +1,5 @@
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+  @for (item of products; track item.id) {
+    <app-list-item [item]="item"></app-list-item>
+  }
+</div>
