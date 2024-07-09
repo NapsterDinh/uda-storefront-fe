@@ -1,21 +1,16 @@
 import { Component, OnInit } from "@angular/core";
-import {
-  FormControl,
-  FormGroup,
-  FormsModule,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from "@angular/forms";
+import { FormsModule, NgForm, ReactiveFormsModule } from "@angular/forms";
 import { Router, RouterLink } from "@angular/router";
 import { CartItem } from "../../models/cart";
 import { Product } from "../../models/product";
 import { CartService } from "../../services/cart.service";
+import { CommonModule } from "@angular/common";
+import { User } from "../../models/user";
 
 @Component({
   selector: "app-cart",
   standalone: true,
-  imports: [FormsModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, FormsModule, RouterLink, ReactiveFormsModule],
   templateUrl: "./cart.component.html",
 })
 export class CartComponent implements OnInit {
@@ -25,18 +20,13 @@ export class CartComponent implements OnInit {
   cartArr: CartItem[] = [];
   total: number = 0;
 
-  validateForm: FormGroup<{
-    fullName: FormControl<string>;
-    address: FormControl<string>;
-    creditCardNumber: FormControl<string>;
-  }> = this.fb.group({
-    fullName: ["", [Validators.required]],
-    address: ["", [Validators.required]],
-    creditCardNumber: ["", [Validators.required]],
-  });
+  user: User = {
+    fullName: "",
+    address: "",
+    creditCardNumber: "",
+  };
 
   constructor(
-    private fb: NonNullableFormBuilder,
     private cartService: CartService,
     private router: Router
   ) {}
@@ -68,20 +58,23 @@ export class CartComponent implements OnInit {
     this.fetchCart();
   }
 
-  placeOrder(): void {
-    console.log(this.validateForm);
+  placeOrder(form: NgForm): void {
+    if (!form.valid) {
+      form.control.markAllAsTouched();
+      return;
+    }
 
-    if (this.validateForm.valid) {
-      this.cartService.clearCart();
-      const orderCode = Date.now().toString();
-      this.router.navigate([`/success/${orderCode}`]);
-    } else {
-      Object.values(this.validateForm.controls).forEach((control) => {
-        if (control.invalid) {
-          control.markAsDirty();
-          control.updateValueAndValidity({ onlySelf: true });
-        }
-      });
+    this.cartService.clearCart();
+    const orderCode = Date.now().toString();
+    this.router.navigate([`/success/${orderCode}`]);
+  }
+
+  onQuantityKeyPress(event: KeyboardEvent) {
+    const pattern = /[0-9]/;
+    const inputChar = String.fromCharCode(event.charCode);
+    if (!pattern.test(inputChar)) {
+      // invalid character, prevent input
+      event.preventDefault();
     }
   }
 }

@@ -19,4 +19,9 @@ export class ProductListComponent implements OnInit {
       this.products = res;
     });
   }
+
+  logAddToCartSuccess(messageEvent: string) {
+    alert(messageEvent);
+    console.log(messageEvent);
+  }
 }

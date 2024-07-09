@@ -11,7 +11,7 @@ import { FlowBiteService } from "./services/flowbite.service";
 })
 export class AppComponent implements OnInit {
   title = "Uda Storefront";
-  navbarItems: any[] = [
+  navbarItems: { path: string; title: string }[] = [
     {
       path: "",
       title: "Home",

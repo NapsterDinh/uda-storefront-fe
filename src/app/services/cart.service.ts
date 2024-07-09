@@ -25,7 +25,7 @@ export class CartService {
     return this.storage?.setItem("cart", "{}");
   }
 
-  async addToCart(product: Product, quantity: number) {
+  async addToCart(product: Product, quantity: number, showAlert = true) {
     const cart = await this.getCart();
     await this.setCart({
       ...cart,
@@ -35,7 +35,7 @@ export class CartService {
         quantity: (cart?.[product.id as number]?.quantity ?? 0) + quantity,
       },
     });
-    alert("Add item to cart successfully!!!");
+    if (showAlert) alert("Add item to cart successfully!!!");
   }
 
   async removeFromCart(product: Product) {
@@ -52,7 +52,7 @@ export class CartService {
       [product.id]: {
         id: product.id,
         product,
-        quantity,
+        quantity: quantity <= 1 ? 1 : quantity,
       },
     });
   }

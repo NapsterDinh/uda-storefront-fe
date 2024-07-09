@@ -1,5 +1,5 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { Product } from "../../models/product";
 import { CartService } from "../../services/cart.service";
@@ -17,6 +17,8 @@ export class ListItemComponent {
   @Input() quantity: number = 1;
   @Input() showBackToHome = false;
 
+  @Output() messageEvent = new EventEmitter<string>();
+
   constructor(private cartService: CartService) {
     this.item = {
       id: 0,
@@ -27,7 +29,8 @@ export class ListItemComponent {
   }
 
   async handleAddToCart() {
-    this.cartService.addToCart(this.item, this.quantity);
+    this.cartService.addToCart(this.item, this.quantity, false);
+    this.messageEvent.emit("Add To Cart Success!!!");
   }
 
   inc(e: MouseEvent) {

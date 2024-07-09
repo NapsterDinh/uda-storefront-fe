@@ -39,6 +39,7 @@
                   class="bg-gray-50 border-x-0 border-gray-300 h-11 text-center text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="1"
                   required
+                  (keypress)="onQuantityKeyPress($event)"
                 />
               </div>
             </form>
@@ -60,11 +61,7 @@
     </div>
   </div>
   <div>
-    <form
-      class="flex flex-col gap-3"
-      [formGroup]="validateForm"
-      (ngSubmit)="placeOrder()"
-    >
+    <form #f="ngForm" class="flex flex-col gap-3" (ngSubmit)="placeOrder(f)">
       <div>
         <label
           for="fullName"
@@ -74,12 +71,23 @@
         </label>
         <input
           type="text"
-          formControlName="fullName"
+          name="fullName"
           id="fullName"
+          [(ngModel)]="user.fullName"
+          #fullName="ngModel"
+          minlength="4"
+          required
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="John"
-          required
         />
+        <div *ngIf="fullName.invalid && (fullName.dirty || fullName.touched)">
+          <div class="text-red-700" *ngIf="fullName.errors?.['required']">
+            FullName is required.
+          </div>
+          <div class="text-red-700" *ngIf="fullName.errors?.['minlength']">
+            FullName must be at least 4 characters long.
+          </div>
+        </div>
       </div>
       <div>
         <label
@@ -90,12 +98,23 @@
         </label>
         <input
           type="text"
+          name="address"
           id="address"
-          formControlName="address"
+          [(ngModel)]="user.address"
+          #address="ngModel"
+          minlength="4"
+          required
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Doe"
-          required
         />
+        <div *ngIf="address.invalid && (address.dirty || address.touched)">
+          <div class="text-red-700" *ngIf="address.errors?.['required']">
+            Address is required.
+          </div>
+          <div class="text-red-700" *ngIf="address.errors?.['minlength']">
+            Address must be at least 4 characters long.
+          </div>
+        </div>
       </div>
       <div>
         <label
@@ -106,12 +125,34 @@
         </label>
         <input
           type="text"
+          name="creditCardNumber"
           id="creditCardNumber"
-          formControlName="creditCardNumber"
+          [(ngModel)]="user.creditCardNumber"
+          #creditCardNumber="ngModel"
+          minlength="4"
+          required
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           placeholder="Flowbite"
-          required
         />
+        <div
+          *ngIf="
+            creditCardNumber.invalid &&
+            (creditCardNumber.dirty || creditCardNumber.touched)
+          "
+        >
+          <div
+            class="text-red-700"
+            *ngIf="creditCardNumber.errors?.['required']"
+          >
+            Credit Card Number is required.
+          </div>
+          <div
+            class="text-red-700"
+            *ngIf="creditCardNumber.errors?.['minlength']"
+          >
+            Credit Card Number must be at least 4 characters long.
+          </div>
+        </div>
       </div>
       <button
         [disabled]="!cartArr.length"
