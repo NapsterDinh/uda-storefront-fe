@@ -1,20 +1,21 @@
 import { CommonModule } from "@angular/common";
 import { Component, Input } from "@angular/core";
-import { CartItem } from "../../models/cart";
-import { CartService } from "../../services/cart.service";
-import { Product } from "../../models/product";
 import { FormsModule } from "@angular/forms";
+import { Product } from "../../models/product";
+import { CartService } from "../../services/cart.service";
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: "app-list-item",
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: "./list-item.component.html",
   providers: [CartService],
 })
 export class ListItemComponent {
   @Input() item: Product;
-  quantity: number = 1;
+  @Input() quantity: number = 1;
+  @Input() showBackToHome = false;
 
   constructor(private cartService: CartService) {
     this.item = {
@@ -25,13 +26,18 @@ export class ListItemComponent {
     };
   }
 
-  addToCart() {}
-
-  inc() {
-    this.quantity++;
+  async handleAddToCart() {
+    this.cartService.addToCart(this.item, this.quantity);
   }
 
-  desc() {
-    this.quantity--;
+  inc(e: MouseEvent) {
+    e.preventDefault();
+    this.quantity += 1;
+  }
+
+  desc(e: MouseEvent) {
+    e.preventDefault();
+    if (this.quantity === 1) return;
+    this.quantity -= 1;
   }
 }

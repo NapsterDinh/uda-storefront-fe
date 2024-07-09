@@ -9,8 +9,4 @@ export class ProductService {
   async getAllProducts() {
     return await this.http.get<Product[]>(apiUrl);
   }
-
-  async getProductById(id: number) {
-    return await this.http.get<Product>(`${apiUrl}/${id}`);
-  }
 }
